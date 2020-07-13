@@ -1,40 +1,55 @@
 package com.codeup.julyspringblog.controllers;
 
+import com.codeup.julyspringblog.models.Post;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
 
 @Controller
 public class PostController {
 
     @GetMapping("/posts")
-    @ResponseBody
-    public String postsIndex(){
+    public String getPosts(Model model){
+        ArrayList<Post> postList = new ArrayList<>();
+        postList.add(new Post(2, "Second Post", "blalalkjlkfd"));
+        postList.add(new Post(3, "Third Post", "more text..."));
 
-        return "Display all posts...";
+        model.addAttribute("posts", postList);
+
+//this return is saying to return what shows up in the templates/posts/index.html
+        return "posts/index";
     }
 
     @GetMapping("/posts/{id}")
-    @ResponseBody
-    public String viewPost(@PathVariable int id) {
+    public String getPost(@PathVariable int id, Model model) {
+        Post post1 = new Post(id, "My first post", "second string");
+        model.addAttribute("title", post1.getTitle());
+        model.addAttribute("body", post1.getBody());
 
-        return "view a single post...";
+//this return is saying to return what shows up in the templates/posts/show.html
+        return "posts/show";
     }
 
     @GetMapping("/posts/create")
     @ResponseBody
-    public String createPostForm(){
+    public String getCreatePostForm(){
 
-        return "Display create post form";
+        return "view form for creating a post...";
     }
 
     @PostMapping("/posts/create")
     @ResponseBody
-    public String submitPost(){
+    public String createPost(){
 
         return "Creating new post...";
+    }
+
+    @RequestMapping(path="/posts", method=RequestMethod.DELETE)
+    @ResponseBody
+    public String delete(){
+        return "DELETE";
     }
 
 }
