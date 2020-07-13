@@ -10,14 +10,15 @@ import java.util.ArrayList;
 @Controller
 public class PostController {
 
+    private PostRepo postDao;
+
+    public PostController(PostRepo postDao) {
+        this.postDao = postDao;
+    }
+
     @GetMapping("/posts")
     public String getPosts(Model model){
-        ArrayList<Post> postList = new ArrayList<>();
-        postList.add(new Post(2, "Second Post", "blalalkjlkfd"));
-        postList.add(new Post(3, "Third Post", "more text..."));
-
-        model.addAttribute("posts", postList);
-
+        model.addAttribute("posts", postDao.findAll());
 //this return is saying to return what shows up in the templates/posts/index.html
         return "posts/index";
     }
@@ -46,10 +47,27 @@ public class PostController {
         return "Creating new post...";
     }
 
-    @RequestMapping(path="/posts", method=RequestMethod.DELETE)
-    @ResponseBody
-    public String delete(){
-        return "DELETE";
+    @PostMapping("/posts/{id}/delete")
+    public String delete(@PathVariable long id) {
+        //delete post
+        postDao.deleteById(id);
+        return "redirect:/posts";
+    }
+
+    @GetMapping("/posts/{id}/edit")
+    public String editForm(@PathVariable long id, Model model) {
+        Post postToEdit = postDao.getOne(id);
+        model.addAttribute("post", postToEdit);
+        return "posts/edit";
+    }
+
+    @PostMapping("/posts/{id}/edit")
+    public String updatePost(@PathVariable long id, @RequestParam String title, @RequestParam String body) {
+        Post p = postDao.getOne(id);
+        p.setTitle(title);
+        p.setBody(body);
+        postDao.save(p);
+        return "redirect:/posts";
     }
 
 }
