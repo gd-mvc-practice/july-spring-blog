@@ -1,6 +1,7 @@
 package com.codeup.julyspringblog.controllers;
 
 import com.codeup.julyspringblog.models.Post;
+import com.codeup.julyspringblog.repositories.PostRepo;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -10,7 +11,7 @@ import java.util.ArrayList;
 @Controller
 public class PostController {
 
-    private PostRepo postDao;
+    private final PostRepo postDao;
 
     public PostController(PostRepo postDao) {
         this.postDao = postDao;
